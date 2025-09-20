@@ -12,7 +12,6 @@ class DFAViewer:
         self.root.title("Construcción de un Software")
         self.root.geometry("900x600")
 
-        # Crear DFA
         self.dfa = DFA(
             states={'F0', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7'},
             input_symbols={'1', '0'},
@@ -34,30 +33,24 @@ class DFAViewer:
         self.draw_dfa()
 
     def setup_ui(self):
-        # Frame principal
         main_frame = tk.Frame(self.root)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Frame para gráfico (izquierda)
         self.graph_frame = tk.Frame(main_frame, bg="#E8AFA7")
         self.graph_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        # Frame para controles (derecha)
         control_frame = tk.Frame(main_frame, width=300, bg='#CAEDE0')
         control_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=10, pady=10)
         control_frame.pack_propagate(False)
 
-        # Sub-frame centrado para controles
         controls_inner = tk.Frame(control_frame, bg='#CAEDE0')
         controls_inner.place(relx=0.5, rely=0.5, anchor="center")
 
-        # Entrada de cadena
         tk.Label(controls_inner, text="Cadena:", bg='#CAEDE0',
                  font=('Times New Roman', 13, 'bold')).pack(pady=5)
         self.entry = tk.Entry(controls_inner, width=22, font=('Times New Roman', 11))
         self.entry.pack(pady=5)
 
-        # Botones más grandes y centrados
         tk.Button(controls_inner, text="Definición Formal", command=self.show_definition,
                   bg="#83AEF4", font=('Arial', 11, 'bold'), width=18, height=2).pack(pady=8)
         
@@ -70,7 +63,6 @@ class DFAViewer:
         tk.Button(controls_inner, text="Cargar Archivo", command=self.load_file,
                   bg='#BCE6B1', font=('Arial', 11, 'bold'), width=18, height=2).pack(pady=8)
 
-        # Resultado
         self.result_label = tk.Label(controls_inner, text="", bg='#CAEDE0',
                                      font=('Arial', 13, 'bold'))
         self.result_label.pack(pady=10)
@@ -83,11 +75,9 @@ class DFAViewer:
 
         G = nx.DiGraph()
 
-        # Agregar nodos
         for state in self.dfa.states:
             G.add_node(state)
 
-        # Agregar aristas
         for from_state, transitions in self.dfa.transitions.items():
             for symbol, to_state in transitions.items():
                 if G.has_edge(from_state, to_state):
@@ -95,31 +85,24 @@ class DFAViewer:
                 else:
                     G.add_edge(from_state, to_state, label=symbol)
 
-        # Posiciones de nodos
         pos = nx.spring_layout(G, k=2, iterations=50)
 
-        # Dibujar nodos
         nx.draw_networkx_nodes(G, pos, node_color='#D6B26B',
                                node_size=900, ax=ax)
 
-        # Destacar estado inicial
         nx.draw_networkx_nodes(G, pos, nodelist=[self.dfa.initial_state],
                                node_color='#88C8DB', node_size=1000, ax=ax)
 
-        # Destacar estados finales
         nx.draw_networkx_nodes(G, pos, nodelist=list(self.dfa.final_states),
                                node_color='#99DB88', node_size=1000, ax=ax)
 
-        # Dibujar aristas
         nx.draw_networkx_edges(G, pos, edge_color='gray',
                                connectionstyle="arc3,rad=0.1",
                                arrows=True, arrowsize=20,
                                arrowstyle='->', ax=ax)
 
-        # Etiquetas de nodos
         nx.draw_networkx_labels(G, pos, font_size=10, ax=ax)
 
-        # Etiquetas de aristas
         edge_labels = nx.get_edge_attributes(G, 'label')
         nx.draw_networkx_edge_labels(G, pos, edge_labels, font_size=9, ax=ax)
 
@@ -182,16 +165,14 @@ class DFAViewer:
                 with open(filename, 'r') as f:
                     strings = [line.strip() for line in f.readlines() if line.strip()]
 
-                # Crear ventana de resultados
                 result_window = tk.Toplevel(self.root)
                 result_window.title("Cadenas leidas")
                 result_window.geometry("650x450")
 
-                # Frame principal
+ 
                 main_frame = tk.Frame(result_window)
                 main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-                # Treeview con numeración
                 tree = ttk.Treeview(main_frame, columns=("Numero", "Cadena", "Resultado"), show="headings", height=15)
                 tree.heading("Numero", text="#")
                 tree.heading("Cadena", text="Cadena")
@@ -201,14 +182,12 @@ class DFAViewer:
                 tree.column("Cadena", width=250, anchor="center")
                 tree.column("Resultado", width=150, anchor="center")
 
-                # Scrollbar
                 scrollbar = ttk.Scrollbar(main_frame, orient=tk.VERTICAL, command=tree.yview)
                 tree.configure(yscrollcommand=scrollbar.set)
 
                 tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
                 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-                # Procesar cadenas
                 for idx, s in enumerate(strings, start=1):
                     try:
                         accepted = self.dfa.accepts_input(s)

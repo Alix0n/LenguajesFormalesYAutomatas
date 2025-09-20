@@ -12,12 +12,10 @@ class DFAViewer:
         self.root.title("Taller 2 - Ejercicio 1")
         self.root.geometry("900x600")
 
-        # Definir símbolos de entrada
-        letters_upper = set(string.ascii_uppercase)  # A-Z
-        letters_lower = set(string.ascii_lowercase)  # a-z
-        digits = set(string.digits)  # 0-9
+        letters_upper = set(string.ascii_uppercase)  
+        letters_lower = set(string.ascii_lowercase)  
+        digits = set(string.digits)  
 
-        # Crear el AFN según la tabla
         self.dfa = NFA(
             states={'P1', 'P2', 'P3', 'P4'},  
             input_symbols=letters_upper | letters_lower | digits,
@@ -39,11 +37,9 @@ class DFAViewer:
         main_frame = tk.Frame(self.root)
         main_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Panel gráfico
         self.graph_frame = tk.Frame(main_frame, bg="#CFCAED")
         self.graph_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        # Panel de controles
         control_frame = tk.Frame(main_frame, width=300, bg="#CFCAED")
         control_frame.pack(side=tk.RIGHT, fill=tk.Y, padx=10, pady=10)
         control_frame.pack_propagate(False)
@@ -76,10 +72,8 @@ class DFAViewer:
         for state in self.dfa.states:
             G.add_node(state)
 
-        # Posiciones fijas para claridad
         pos = {'P1': (0, 0), 'P2': (3, 1), 'P3': (6, 0), 'P4': (3, -1)}
 
-        # Agrupar transiciones en [A-Z], [a-z], [0-9]
         for from_state, transitions in self.dfa.transitions.items():
             grouped = {}
             for symbol, to_states in transitions.items():
@@ -98,20 +92,17 @@ class DFAViewer:
             for (f, t), groups in grouped.items():
                 G.add_edge(f, t, label=",".join(sorted(groups)))
 
-        # Dibujar nodos
         nx.draw_networkx_nodes(G, pos, node_color='#D6B26B', node_size=900, ax=ax)
         nx.draw_networkx_nodes(G, pos, nodelist=[self.dfa.initial_state],
                                node_color='#88C8DB', node_size=1000, ax=ax)
         nx.draw_networkx_nodes(G, pos, nodelist=list(self.dfa.final_states),
                                node_color='#99DB88', node_size=1000, ax=ax)
 
-        # Dibujar aristas
         nx.draw_networkx_edges(G, pos, edge_color='gray',
                                connectionstyle="arc3,rad=0.1",
                                arrows=True, arrowsize=20,
                                arrowstyle='->', ax=ax)
 
-        # Etiquetas
         nx.draw_networkx_labels(G, pos, font_size=10, ax=ax)
         edge_labels = nx.get_edge_attributes(G, 'label')
         nx.draw_networkx_edge_labels(G, pos, edge_labels, font_size=9, ax=ax)
@@ -141,16 +132,13 @@ class DFAViewer:
                 with open(filename, 'r') as f:
                     strings = [line.strip() for line in f.readlines() if line.strip()]
 
-                # Crear ventana de resultados
                 result_window = tk.Toplevel(self.root)
                 result_window.title("Cadenas leidas")
                 result_window.geometry("750x550")
 
-                # Frame principal
                 main_frame = tk.Frame(result_window)
                 main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-                # Treeview con numeración
                 tree = ttk.Treeview(main_frame, columns=("Numero", "Cadena", "Resultado"), show="headings", height=15)
                 tree.heading("Numero", text="#")
                 tree.heading("Cadena", text="Cadena")
@@ -160,14 +148,12 @@ class DFAViewer:
                 tree.column("Cadena", width=250, anchor="center")
                 tree.column("Resultado", width=150, anchor="center")
 
-                # Scrollbar
                 scrollbar = ttk.Scrollbar(main_frame, orient=tk.VERTICAL, command=tree.yview)
                 tree.configure(yscrollcommand=scrollbar.set)
 
                 tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
                 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-                # Procesar cadenas
                 for idx, s in enumerate(strings, start=1):
                     try:
                         accepted = self.dfa.accepts_input(s)

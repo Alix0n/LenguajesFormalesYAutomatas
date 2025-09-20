@@ -3,11 +3,10 @@ from automata.fa.dfa import DFA
 
 class CorreoUPTC:
     def __init__(self):
-        # Símbolos permitidos
-        letters_lower = set(string.ascii_lowercase)   # a-z
-        digits = set(string.digits)                  # 0-9
-        specials = {'@', '.'}                        # únicos símbolos especiales necesarios
-        # El conjunto de entrada para el DFA (solo minúsculas, dígitos, @ y .)
+
+        letters_lower = set(string.ascii_lowercase)  
+        digits = set(string.digits)                  
+        specials = {'@', '.'}                        
         self.symbols = letters_lower | digits | specials
 
         def all_to(state):
@@ -53,12 +52,10 @@ class CorreoUPTC:
         if not cadena:
             return False
 
-        # Rechazar inmediatamente si hay algún símbolo no permitido (por ejemplo mayúsculas)
         for ch in cadena:
             if ch not in self.symbols:
                 return False
 
-        # Usar el DFA para decidir
         try:
             return self.dfa.accepts_input(cadena)
         except Exception:
@@ -69,19 +66,16 @@ if __name__ == "__main__":
     automata = CorreoUPTC()
 
   #  pruebas = [
-      #  "juan3@uptc.edu.co",   # ✅ esperado
-      #  "maria@uptc.edu.co",   # ✅ esperado
-      #  "abc123@uptc.edu.co",  # ✅ esperado
-       # "123juan@uptc.edu.co", # ❌ esperado
-       # "",       # ❌ esperado
-       # "MARIA@uptc.edu.co"    # ❌ esperado (mayúsculas)
+      #  "juan3@uptc.edu.co",  
+      #  "maria@uptc.edu.co",   
+      #  "abc123@uptc.edu.co",  
+       # "123juan@uptc.edu.co", 
+       # "MARIA@uptc.edu.co"   
    # ]
 
    # for cadena in pruebas:
-   #     print(f"{cadena:30} -> {'Aceptado ✅' if automata.validar(cadena) else 'Rechazado ❌'}")
+   #     print(f"{cadena:30} -> {'Aceptado ' if automata.validar(cadena) else 'Rechazado'}")
 
-    # Interactivo
-   # print("\nProbador interactivo. Escribe 'salir' para terminar.")
     while True:
         s = input("Ingresa cadena: ").strip()
         if s.lower() == 'salir':
